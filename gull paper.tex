@@ -1,0 +1,98 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{xfrac}
+\usepackage{lineno}
+
+
+
+ \renewcommand{\familydefault}{\sfdefault}
+
+\nolinenumbers
+
+\title{Modelling the impact of animal-derived nutrients}
+%\running{Nutrient distribution}
+
+\author{Adam Kane$^1$$^*$ and John Quinn$^1$}  
+
+% A. Kane adam.kane@ucc.ie, & John Quinn, 
+
+
+% \nwords{9999}
+
+
+\begin{document}
+
+\maketitle
+1. University College Cork, Cooperage Building, School of Biological Earth and Environmental Sciences, Cork, Ireland. 
+\\ \\ * correspondence to adam.kane@ucc.ie
+
+\newpage
+\begin{abstract} 
+1. Through their movements animals can alter the nutirent \\ distribution of their environment as they excrete and defecate away from the point of their food source. 
+This can radically affect environmental \\ features such as primary productivity and water quality. 
+Efforts to describe these distributions typically follow an analytical approach such that the spatial nature of the system is poorly represented. 
+Spatially explicit models however, can redress this issue. \\
+
+2. Here we use an agent-based model in combination with GIS land cover data to demonstrate a more suitable method for modelling nutrient distributions and their impacts. 
+We take as a case study the impact urban foraging gulls have on freshwater quality by using a Herring Gull (\textit{Larus argentatus}) colony near to Cork City, Ireland. \\
+
+3. Our results indicate a colony of Herring Gulls would defecate approximately xx \% of their faeces into the freshwater of the city. \\
+
+4. This approach can be readily implemented for other foragers where land use is well characterised. 
+Indeed, such models will be well suited to being updated in light of more accurate data such as is likely for telemetry studies which will continue to capture the nuances of animal movement.
+
+\end{abstract}
+
+\newpage
+
+
+\section*{Introduction}
+
+
+
+\section*{Methods}
+We gathered the most recent land cover information for Ireland which is the 2012 Corine National Landcover dataset.  
+The nearest recorded Herring Gull colony to the city is located in Cork Harbour (51.7935452 latitude, -8.22465133 longitude). 
+The gulls were located here and had enough energy at the start of each day to forage for 3 hours. 
+They set off from the colony at a random heading and begin to forage. 
+They move at their assigned speed and turn 30 degrees left or right every 10 minutes.
+If they encounter food in their detection radius they slow to a quarter of their speed and increase their rate of turn by 33 \%.
+Once they run out of energy they return straight to their colony. 
+All the while they defecate at the assigned rate. 
+Our model grouped the land cover data into 3 categories, freshwater, sea and other. 
+
+
+\begin{table}[]
+\centering
+\caption{Parameter values for the Herring Gulls in the model}
+\label{parameter-table}
+\begin{tabular}{cc}
+\hline
+\textbf{Parameter}            & \textbf{Value} \\ \hline
+Speed (km/hr)                 & 45             \\
+Time awake (hours)            & 19             \\
+Foraging time (hours)         & 3              \\
+Defecation rate (per hour)    & 3              \\
+Detection distance (km)       & 1              \\ 
+Population size (individuals) & 1-20           \\ \hline
+\end{tabular}
+\end{table}
+
+\section*{Results}
+
+\section*{Discussion}
+
+
+\section*{Appendix}
+
+\section*{Acknowledgments}
+
+\newpage
+
+
+\bibliography{bibfile}
+
+
+
+\end{document}
