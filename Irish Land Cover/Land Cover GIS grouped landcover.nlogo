@@ -3,7 +3,7 @@ globals [ireland patch-scale day freshwater ocean land fresh-nutrients other-nut
 breed [gulls gull]
 breed [nutrients nutrient]
 breed [foods food]
-gulls-own [energy  x0 y0]
+gulls-own [energy  x0 y0 retention distance-traveled]
 patches-own [ landcover ]
 
 ;##########################################################################################
@@ -13,25 +13,40 @@ patches-own [ landcover ]
 to setup-ireland
   clear-all
 
-  ask patches [set pcolor white ]
+;##################
+;; Patch setup
+;##################
+
+  ask patches [set pcolor white]
   ask patch 0 0
  [
     set pcolor blue
     ask patches in-radius 20 [set pcolor blue]
   ]
 
+   ask (patch-set patch 20 0 patch -20 0 patch 0 20 patch 0 -20) [ set pcolor white ]
+
+;##################
+;; Gull setup
+;##################
+
   create-gulls n-gulls [set color white
   setxy 0 0
+  set distance-traveled 0
   set size 0.5
   set shape "hawk"
-  set energy 10800 ;; 3 hours flight time, 3 hours to fly back
-  ;set heading random 360
-  face patch -17 10
-  ask (patch-set patch 20 0 patch -20 0 patch 0 20 patch 0 -20) [ set pcolor white ]
-
+  set energy 41400 ;; 11.5 hours flight time, 0.5 hours to fly back
+  set retention 18000
+  ifelse directed? [
+   set heading 315 ]
+  [set heading random 360]
  ]
+
+;##################
+;; Load landcover data and colour by Code 12 value
+;##################
+
   set ireland gis:load-dataset "land use by gull radius.shp"
-   ; set ireland gis:load-dataset "40km gull radius .shp"
   gis:set-world-envelope gis:envelope-of ireland
 
   foreach gis:feature-list-of ireland
@@ -71,15 +86,15 @@ to setup-ireland
     if gis:property-value ? "CODE_12" = "111" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; continuous urban fabric
     ]
 
-;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
-  gis:apply-coverage ireland "CODE_12" landcover
+
 ;##################
 ;; Group the Land Cover Data
 ;##################
 set freshwater gis:find-range ireland "CODE_12" "411" "523" ;; include values for water features but none for ocean
 set ocean gis:find-features ireland "CODE_12" "523"
 set land gis:find-range ireland "CODE_12" "110" "334" ;; include values for water features but none for ocean
-
+;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
+gis:apply-coverage ireland "CODE_12" landcover
 
 if foods? [
 ;##################
@@ -106,7 +121,7 @@ ask foods with [color != pink][die]
 ;; Ocean Code
 ;##################
 ; ask patches with [landcover = "523"] [set pcolor blue]
-ask n-of n-seafoods patches with [landcover = "523" and pcolor = yellow] [sprout-foods 1 [
+ask n-of n-seafoods patches with [landcover = "523" and pcolor = blue] [sprout-foods 1 [
   set shape "circle"
      set size 0.2
      set color pink
@@ -117,33 +132,46 @@ ask n-of n-seafoods patches with [landcover = "523" and pcolor = yellow] [sprout
 ;; Land Code
 ;##################
 
-foreach land
-  [ foreach  gis:vertex-lists-of ?
-    [foreach  ? ;; added n-of 10 here
-      [ let location gis:location-of ?
-        if not empty? location
-        [ create-foods 1
-          [ set xcor item 0 location
-            set ycor item 1 location
-            set shape "circle"
-     set size 0.2
-     set color blue
-             ] ]
-      ] ] ]
+;foreach land
+;  [ foreach  gis:vertex-lists-of ?
+;    [foreach  ? ;; added n-of 10 here
+;      [ let location gis:location-of ?
+;        if not empty? location
+;        [ create-foods 1
+;          [ set xcor item 0 location
+;            set ycor item 1 location
+;            set shape "circle"
+;     set size 0.2
+;     set color blue
+;             ] ]
+;      ] ] ]
 
-ask n-of n-landfoods foods [set color pink]
-ask foods with [color != pink][die]
+;ask n-of n-landfoods foods [set color pink]
+;ask foods with [color != pink][die]
+;]
+
+
+ask n-of n-landfoods patches with [landcover != "523" and pcolor = blue ] [sprout-foods 1 [
+  set shape "circle"
+     set size 0.2
+     set color pink
+]
+]
 ]
 ;##################
 ;; Scale the Area
 ;##################
-;  gis:set-drawing-color blue - 1  gis:fill freshwater 1
-  set patch-scale (item 1 gis:world-envelope - item 0 gis:world-envelope ) / world-width
+;; set patch-scale (item 1 gis:world-envelope - item 0 gis:world-envelope ) / world-width
 ;; check the size of the area
 ;; show patch-scale * world-width
 ;; show world-width
 
 reset-ticks
+end
+
+to focus-food
+ask patch -17 10 [ask foods in-radius 10 [set color red]]
+ask foods with [color != red][die]
 end
 
 ;##########################################################################################
@@ -153,12 +181,10 @@ to go
    if ticks = day-length  [set day day + 1 create-next-day]
 
    ask nutrients [
-;if ticks = day-length - 1 [die]
-;check-water  ;; BD change 2
 ]
 
   ask gulls [
-   ; face patch 0 16
+   travel
    move
    forage
    excrete
@@ -166,54 +192,70 @@ to go
    territory
   ]
 
-
-
-  if ticks = 1 [
-
-  ]
-
- ; ask [count foods / 50] [ die]
-   export-view (word ticks ".png")
-
   tick
-end
+  end
+
+;##############
+;; test excretion rate with this code
+;##############
+;  ask patch 0 0 [if ticks = 7200 and day = 0 [sprout-foods 1]]
+;  if day = 1 [stop]
+
+;  export-view (word ticks ".png")
 
 ;##########################################################################################
 ;; GULL COMMANDS
 ;##########################################################################################
 
+to travel
+  if energy > 0 [ if color = white [set distance-traveled distance-traveled + v] if color = orange [set distance-traveled distance-traveled + v / 10]]
+;  if ticks = day-length - 1 [ask gulls [ show distance-traveled]]
+
+end
+
 to move
       set energy  energy  - 1
-   ifelse color = white  [fd v]
-    [fd v / 4]
-      if random 600 = 1 ;; frequency of turn
+  ifelse distance-traveled <= 10 [fd v
+    if random 6000 = 1 ;; frequency of turn
   [ ifelse random 2 = 0 ;; 50:50 chance of left or right
-    [ rt 30 ] ;; could add some variation to this with random-normal 45 5
-    [ lt 30 ]]
+    [ rt 15 ] ;; could add some variation to this with random-normal 30 5
+    [ lt 15 ]]]
+   [ifelse color = white  [fd v / 5
+    if random 600 = 1 ;; frequency of turn
+  [ ifelse random 2 = 0 ;; 50:50 chance of left or right
+    [ rt 45 ] ;; could add some variation to this with random-normal 30 5
+    [ lt 45 ]]][fd v / 10]]
+
 end
 
 to forage
-  ifelse any? foods in-radius 0.825[
+  ifelse any? foods in-radius vision and distance-traveled > 20 [
     set color orange
+    set size 0.51 ;; gets fatter once it fed
   if random 200 = 1
   [ ifelse random 2 = 0
-    [ rt 30 ]
-    [ lt 30 ]]]
+    [ rt 45 ]
+    [ lt 45 ]]]
   [set color white]
 end
 
 to excrete
+if size = 0.51 [set retention retention - 1]
+if retention <= 0 [
+  set retention 0
 if random excretion-rate < 57 [hatch-nutrients 1 [
       set color cyan
       set shape "circle"
       set size 0.2
-      check-water]]  ;;BD change 3
+      check-water]]]
 end
 
  to rtb
   if energy <= 0 [
    face patch 0 0
-    if patch-here = [0 0] [face patch 0 16]]
+   set color white
+   fd v]
+;    if patch-here = [0 0] [face patch 0 16]]
 end
 
 to territory
@@ -228,30 +270,33 @@ end
 ;; NUTRIENT COMMANDS
 ;##########################################################################################
 to check-water
- ; let estuaries gis:find-features ireland "CODE_12" "522" ;;BD change 1
-  ; ask nutrients [   ;;BD change 4
   ifelse gis:intersects? freshwater self [
   set color red
   set fresh-nutrients fresh-nutrients + 1
-  die
+;  die
    ]
   [
   set color cyan
     set other-nutrients other-nutrients + 1
-       die
+;       die
   ]
-   ;]
 end
 ;##########################################################################################
 ;; RESET COMMANDS
 ;##########################################################################################
-
 to create-next-day
   clear-links
   reset-ticks
-  ask gulls [set energy 10800]
-; ask nutrients [die]
-  go
+  ask gulls [
+     ifelse directed? [
+  set heading 315]
+  [set heading random 360]
+    set energy 41400
+    set retention 18000
+    set size 0.5
+    set distance-traveled 0
+    ]
+    go
 end
 ;##########################################################################################
 ;; END OF CODE
@@ -262,11 +307,11 @@ end
 GRAPHICS-WINDOW
 211
 10
-1037
-857
+795
+615
 20
 20
-20.0
+14.0
 1
 10
 1
@@ -321,22 +366,22 @@ NIL
 1
 
 TEXTBOX
-1394
-50
-1544
-78
+222
+624
+372
+652
 Cork Harbour to Youghal Harbour	Gyleen (west)\n
 11
 0.0
 1
 
 INPUTBOX
-32
-170
-187
-230
+33
+193
+188
+253
 excretion-rate
-68000
+68400
 1
 0
 Number
@@ -357,31 +402,31 @@ NIL
 HORIZONTAL
 
 INPUTBOX
-33
-100
-188
-160
+35
+326
+190
+386
 day-length
-68000
+68400
 1
 0
 Number
 
 TEXTBOX
-1411
-108
-1561
-136
+664
+625
+814
+653
 gulls sleep for 5 hours so awake for 19 hours
 11
 0.0
 1
 
 MONITOR
-37
-306
-94
-351
+30
+395
+87
+440
 NIL
 day
 17
@@ -389,21 +434,21 @@ day
 11
 
 INPUTBOX
-34
-235
-189
-295
+35
+258
+190
+318
 v
-0.1
+0.0090
 1
 0
 Number
 
 MONITOR
-102
-358
-197
-403
+95
+447
+190
+492
 NIL
 fresh-nutrients
 17
@@ -411,10 +456,10 @@ fresh-nutrients
 11
 
 MONITOR
-100
-305
-197
-350
+93
+394
+190
+439
 NIL
 other-nutrients
 17
@@ -422,35 +467,25 @@ other-nutrients
 11
 
 SLIDER
-26
-413
-198
-446
+19
+502
+191
+535
 n-freshfoods
 n-freshfoods
 0
 100
-20
+0
 1
 1
 NIL
 HORIZONTAL
 
-TEXTBOX
-1329
-188
-1479
-230
-0.0104 km/sec for 20 km model
-11
-0.0
-1
-
 SLIDER
-28
-451
-200
-484
+21
+540
+193
+573
 n-seafoods
 n-seafoods
 0
@@ -462,30 +497,93 @@ NIL
 HORIZONTAL
 
 SLIDER
-28
-491
-200
-524
+21
+580
+193
+613
 n-landfoods
 n-landfoods
 0
 100
-0
+100
 1
 1
 NIL
 HORIZONTAL
 
 SWITCH
-7
-365
-97
-398
+0
+454
+90
+487
 foods?
 foods?
 0
 1
 -1000
+
+TEXTBOX
+399
+624
+596
+750
+Remove patch scale so that patch size is 1. That way speed is easier to calculate. If v = 1 the bird is going 1 patch or 1 km per second. When v = 0.0125 it is going 45 km/hr.\n\nCamphuysen (1995) gives a minimum power speed of 9 m/s for a Herring Gull = 0.009
+11
+0.0
+1
+
+SLIDER
+19
+108
+191
+141
+vision
+vision
+0
+22
+1
+1
+1
+km
+HORIZONTAL
+
+SWITCH
+3
+151
+109
+184
+directed?
+directed?
+0
+1
+-1000
+
+BUTTON
+814
+10
+906
+43
+NIL
+focus-food
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+TEXTBOX
+218
+684
+368
+726
+change scale from 20 x 20 to 200 x 200 for more realistic patch dynamics
+11
+0.0
+1
 
 @#$#@#$#@
 ## Parameter estimates
@@ -495,6 +593,12 @@ patch is 1212 metres long so fd 1 will mean the bird moves 1212 metres per secon
 12.6 m/sec = 45.36 km/hr
 1212/12.6 = 96
 fd 0.0104 = 12.6 metres per second
+
+
+---
+12.6m/s = 45km/hr
+975 (patch scale in metres) / 12.6 = 77
+1/77 = 0.01298 km/second
 
 Herring Gull sleeps for 5 hours
 Amlaner & Ball (1983) A Synthesis of Sleep in Wild Birds

@@ -3,7 +3,7 @@
 \usepackage{amsmath}
 \usepackage{xfrac}
 \usepackage{lineno}
-
+\usepackage{natbib}
 
 
  \renewcommand{\familydefault}{\sfdefault}
@@ -31,7 +31,7 @@
 \begin{abstract} 
 1. Through their movements animals can alter the nutirent \\ distribution of their environment as they excrete and defecate away from the point of their food source. 
 This can radically affect environmental \\ features such as primary productivity and water quality. 
-Efforts to describe these distributions typically follow an analytical approach such that the spatial nature of the system is poorly represented. 
+Efforts to describe these distributions typically follow analytical or numerical approaches such that the spatial nature of the system is poorly represented. 
 Spatially explicit models however, can redress this issue. \\
 
 2. Here we use an agent-based model in combination with GIS land cover data to demonstrate a more suitable method for modelling nutrient distributions and their impacts. 
@@ -48,12 +48,28 @@ Indeed, such models will be well suited to being updated in light of more accura
 
 
 \section*{Introduction}
+Animals can transfer nutrients over their environment as they excrete and defecate, a process which can dramatically alter the nutrient landscape. 
+In a natural experiment on the Aleutian archipelago it was shown that introduced predators depleted the bird colonies there to such an extent that the amount of guanao could no longer sustain the grassland. 
+
+By modelling these movements as a diffusion-like process over a longer time-scale it has been shown that the extinction of Pleistocene megafauna in the Amazon decreased the lateral flux of phosphorus by over 98\%. 
+These larger species ranged widely and as they defecated were altering the geochemistry of the soil. 
+Their absence is still felt today in the Amazon where phosphorus is limiting. 
+
+More recently, this process has been recognised as potentially impinging on human health. 
+For instance, urban-adapted animals, notably birds, are able to foul water supplies. 
+In particular, gull faeces have been shown to be a major source of faecal contamination in some areas. 
+This effect is difficult to quantify because of the number of variables involved. 
+Previous studies have typically turned to analytic or numerical approaches to get an estimate of the amount of faecal matter being deposited.
+Here, we offer a more suitable method by drawing on agent-based models, which are better able to capture the spatially-explicit nature of this process. 
+We illustrate the method with a specific case study involving Herring Gulls foraging over a city. 
 
 
+\section*{Biological Data}
 
-\section*{Methods}
+
 We gathered the most recent land cover information for Ireland which is the 2012 Corine National Landcover dataset.  
 The nearest recorded Herring Gull colony to the city is located in Cork Harbour (51.7935452 latitude, -8.22465133 longitude). 
+We created a shape file of 25 km radius about this centre point. 
 The gulls were located here and had enough energy at the start of each day to forage for 3 hours. 
 They set off from the colony at a random heading and begin to forage. 
 They move at their assigned speed and turn 30 degrees left or right every 10 minutes.
@@ -63,7 +79,7 @@ All the while they defecate at the assigned rate.
 Our model grouped the land cover data into 3 categories, freshwater, sea and other. 
 
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Parameter values for the Herring Gulls in the model}
 \label{parameter-table}
@@ -91,7 +107,7 @@ Population size (individuals) & 1-20           \\ \hline
 \newpage
 
 
-\bibliography{bibfile}
+\bibliography{bibfileGull}
 
 
 

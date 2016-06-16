@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2015.11.24)  9 JUN 2016 17:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2015.11.24)  14 JUN 2016 10:24
 entering extended mode
 **"C:/Users/akane/Desktop/Science/Manuscripts/Nutrients and Birds/manuscripts/G
 ull-Land-Cover-/gull paper.tex"
@@ -403,6 +403,13 @@ Package: lineno 2005/11/02 line numbers on paragraphs v4.41
 \bframebox=\box45
 LaTeX Info: Redefining \\ on input line 3056.
 )
+("C:\Program Files (x86)\MiKTeX 2.9\tex\latex\natbib\natbib.sty"
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip53
+\bibsep=\skip54
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count136
+)
 ("gull paper.aux")
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
 LaTeX Font Info:    ... okay on input line 24.
@@ -429,16 +436,16 @@ File: ot1lmss.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 ("C:\Program Files (x86)\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count136
+\scratchcounter=\count137
 \scratchdimen=\dimen156
 \scratchbox=\box46
-\nofMPsegments=\count137
-\nofMParguments=\count138
+\nofMPsegments=\count138
+\nofMParguments=\count139
 \everyMPshowfont=\toks21
-\MPscratchCnt=\count139
+\MPscratchCnt=\count140
 \MPscratchDim=\dimen157
-\MPnumerator=\count140
-\makeMPintoPDFobject=\count141
+\MPnumerator=\count141
+\makeMPintoPDFobject=\count142
 \everyMPtoPDFconversion=\toks22
 )
 LaTeX Font Info:    Try loading font information for OT1+lmr on input line 26.
@@ -493,24 +500,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 40--41
  []
 
 [2]
-
-LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 66.
-
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 70.
+(Font)              <12> on input line 83.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 70.
+(Font)              <8> on input line 83.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 70.
-[3]
+(Font)              <6> on input line 83.
+ [3] [4]
 No file "gull paper".bbl.
 ("gull paper.aux") ) 
 Here is how much of TeX's memory you used:
- 9847 strings out of 493673
- 184282 string characters out of 3141529
- 206691 words of memory out of 3000000
- 13148 multiletter control sequences out of 15000+200000
+ 10180 strings out of 493673
+ 188235 string characters out of 3141529
+ 214413 words of memory out of 3000000
+ 13477 multiletter control sequences out of 15000+200000
  50335 words of font info for 43 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
  34i,7n,42p,10474b,275s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -522,9 +525,9 @@ X 2.9/fonts/type1/public/lm/lmss12.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts
 /type1/public/lm/lmss17.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/publ
 ic/lm/lmssbx10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lms
 so10.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/public/lm/lmsy10.pfb>
-Output written on "gull paper.pdf" (3 pages, 132417 bytes).
+Output written on "gull paper.pdf" (4 pages, 134992 bytes).
 PDF statistics:
- 42 PDF objects out of 1000 (max. 8388607)
+ 45 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
