@@ -53,29 +53,29 @@ to setup-ireland
   [ if gis:property-value ? "CODE_12" = "523" [ gis:set-drawing-color blue gis:fill ? 2.0] ;; sea and ocean ; present
     if gis:property-value ? "CODE_12" = "522" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; estuaries ; present
     if gis:property-value ? "CODE_12" = "521" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; coastal lagoons ; present
-    if gis:property-value ? "CODE_12" = "512" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water bodies ; absent
-    if gis:property-value ? "CODE_12" = "511" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water courses ; absent
+    ;if gis:property-value ? "CODE_12" = "512" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water bodies ; absent
+    ;if gis:property-value ? "CODE_12" = "511" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water courses ; absent
     if gis:property-value ? "CODE_12" = "423" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; intertidal flats ; present
     if gis:property-value ? "CODE_12" = "421" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; salt marshes ; present
-    if gis:property-value ? "CODE_12" = "412" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; peat bogs ; absent
-    if gis:property-value ? "CODE_12" = "411" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; inland marshes ; absent
-    if gis:property-value ? "CODE_12" = "333" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; sparsely vegetated areas
-    if gis:property-value ? "CODE_12" = "332" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; bare rock
-    if gis:property-value ? "CODE_12" = "331" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; beaches, dunes and sand plains
-    if gis:property-value ? "CODE_12" = "324" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; transitional woodland shrub
-    if gis:property-value ? "CODE_12" = "322" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; moors and heathland
-    if gis:property-value ? "CODE_12" = "321" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; natural grassland
-    if gis:property-value ? "CODE_12" = "313" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; mixed forest
-    if gis:property-value ? "CODE_12" = "312" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; coniferous forest
-    if gis:property-value ? "CODE_12" = "311" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; broad-leaved forest
+    ;if gis:property-value ? "CODE_12" = "412" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; peat bogs ; absent
+    ;if gis:property-value ? "CODE_12" = "411" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; inland marshes ; absent
+    ;if gis:property-value ? "CODE_12" = "333" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; sparsely vegetated areas
+    ;if gis:property-value ? "CODE_12" = "332" [ gis:set-drawing-color pink  gis:fill ? 2.0] ;; bare rock
+    ;if gis:property-value ? "CODE_12" = "331" [ gis:set-drawing-color pink  gis:fill ? 2.0] ;; beaches, dunes and sand plains
+    if gis:property-value ? "CODE_12" = "324" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; transitional woodland shrub
+    ;if gis:property-value ? "CODE_12" = "322" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; moors and heathland
+    ;if gis:property-value ? "CODE_12" = "321" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; natural grassland
+    if gis:property-value ? "CODE_12" = "313" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; mixed forest
+    ;if gis:property-value ? "CODE_12" = "312" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; coniferous forest
+    if gis:property-value ? "CODE_12" = "311" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; broad-leaved forest
     if gis:property-value ? "CODE_12" = "243" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; agriculture cum vegetation
     if gis:property-value ? "CODE_12" = "242" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; complex cultivation patterns
     if gis:property-value ? "CODE_12" = "231" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; pastures
-    if gis:property-value ? "CODE_12" = "222" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; fruit tress and berry plantations
-    if gis:property-value ? "CODE_12" = "211" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; non irrigated arable land
+    ;if gis:property-value ? "CODE_12" = "222" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; fruit tress and berry plantations
+    if gis:property-value ? "CODE_12" = "211" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; non irrigated arable land
     if gis:property-value ? "CODE_12" = "142" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; sport and leisure facilities
-    if gis:property-value ? "CODE_12" = "141" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; green urban areas
-    if gis:property-value ? "CODE_12" = "133" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; construction sites
+    ;if gis:property-value ? "CODE_12" = "141" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; green urban areas
+    ;if gis:property-value ? "CODE_12" = "133" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; construction sites
     if gis:property-value ? "CODE_12" = "132" [ gis:set-drawing-color orange  gis:fill ? 2.0] ;; dump sites
     if gis:property-value ? "CODE_12" = "131" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; mineral extraction sites
     if gis:property-value ? "CODE_12" = "124" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; airports
@@ -83,7 +83,7 @@ to setup-ireland
     if gis:property-value ? "CODE_12" = "122" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; road and rail networks
     if gis:property-value ? "CODE_12" = "121" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; industrial or commerical units
     if gis:property-value ? "CODE_12" = "112" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; discontinuous urban fabric
-    if gis:property-value ? "CODE_12" = "111" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; continuous urban fabric
+    ;if gis:property-value ? "CODE_12" = "111" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; continuous urban fabric
     ]
 
 
@@ -94,7 +94,6 @@ set freshwater gis:find-range ireland "CODE_12" "411" "523" ;; include values fo
 set ocean gis:find-features ireland "CODE_12" "523"
 set land gis:find-range ireland "CODE_12" "110" "334" ;; include values for water features but none for ocean
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
-gis:apply-coverage ireland "CODE_12" landcover
 
 if foods? [
 ;##################
@@ -170,8 +169,22 @@ reset-ticks
 end
 
 to focus-food
-ask patch -17 10 [ask foods in-radius 10 [set color red]]
-ask foods with [color != red][die]
+;ask patch -17 10 [ask foods in-radius 10 [set color red]]
+;ask foods with [color != red][die]
+  let max-distance max [ distancexy 0 0 ] of patches with [pcolor = blue]
+  ask patches [
+    if random-float 1.0 > (distancexy 0 0 / max-distance) [
+      sprout-foods 1
+     [  set shape "circle"
+     set size 0.3
+     set color pink
+    ]
+    ]
+  ]
+end
+
+to apply-landcover ; slow procedure that applies to landcover values to the patches
+gis:apply-coverage ireland "CODE_12" landcover
 end
 
 ;##########################################################################################
@@ -273,12 +286,12 @@ to check-water
   ifelse gis:intersects? freshwater self [
   set color red
   set fresh-nutrients fresh-nutrients + 1
-;  die
+  die
    ]
   [
   set color cyan
     set other-nutrients other-nutrients + 1
-;       die
+       die
   ]
 end
 ;##########################################################################################
@@ -395,7 +408,7 @@ n-gulls
 n-gulls
 0
 100
-20
+5
 1
 1
 NIL
@@ -475,7 +488,7 @@ n-freshfoods
 n-freshfoods
 0
 100
-0
+100
 1
 1
 NIL
@@ -505,7 +518,7 @@ n-landfoods
 n-landfoods
 0
 100
-100
+0
 1
 1
 NIL
@@ -583,6 +596,23 @@ TEXTBOX
 change scale from 20 x 20 to 200 x 200 for more realistic patch dynamics
 11
 0.0
+1
+
+BUTTON
+805
+46
+925
+79
+NIL
+apply-landcover
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
 1
 
 @#$#@#$#@
