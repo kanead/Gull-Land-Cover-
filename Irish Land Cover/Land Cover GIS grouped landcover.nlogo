@@ -1,5 +1,5 @@
 extensions[gis]
-globals [ireland patch-scale day freshwater ocean land fresh-nutrients other-nutrients]
+globals [ireland patch-scale day freshwater ocean land farms urban fresh-nutrients other-nutrients]
 breed [gulls gull]
 breed [nutrients nutrient]
 breed [foods food]
@@ -68,11 +68,13 @@ to setup-ireland
     if gis:property-value ? "CODE_12" = "313" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; mixed forest
     ;if gis:property-value ? "CODE_12" = "312" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; coniferous forest
     if gis:property-value ? "CODE_12" = "311" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; broad-leaved forest
+
     if gis:property-value ? "CODE_12" = "243" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; agriculture cum vegetation
     if gis:property-value ? "CODE_12" = "242" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; complex cultivation patterns
     if gis:property-value ? "CODE_12" = "231" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; pastures
     ;if gis:property-value ? "CODE_12" = "222" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; fruit tress and berry plantations
     if gis:property-value ? "CODE_12" = "211" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; non irrigated arable land
+
     if gis:property-value ? "CODE_12" = "142" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; sport and leisure facilities
     ;if gis:property-value ? "CODE_12" = "141" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; green urban areas
     ;if gis:property-value ? "CODE_12" = "133" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; construction sites
@@ -91,6 +93,8 @@ to setup-ireland
 ;; Group the Land Cover Data
 ;##################
 set freshwater gis:find-range ireland "CODE_12" "411" "523" ;; include values for water features but none for ocean
+set farms gis:find-range ireland "CODE_12" "210" "244"
+set urban gis:find-range ireland "CODE_12" "111" "143"
 set ocean gis:find-features ireland "CODE_12" "523"
 set land gis:find-range ireland "CODE_12" "110" "334" ;; include values for water features but none for ocean
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
@@ -156,6 +160,48 @@ ask n-of n-landfoods patches with [landcover != "523" and pcolor = blue ] [sprou
      set color pink
 ]
 ]
+
+
+;##################
+;; Farms Code
+;##################
+foreach farms
+  [ foreach  gis:vertex-lists-of ?
+    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+      [ let location gis:location-of ?
+        if not empty? location
+        [ create-foods 1
+          [ set xcor item 0 location
+            set ycor item 1 location
+            set shape "circle"
+     set size 0.2
+     set color orange
+             ] ]
+      ] ] ]
+
+ask n-of n-farmfoods foods [set color pink]
+ask foods with [color != pink][die]
+
+;##################
+;; Urban Code
+;##################
+foreach urban
+  [ foreach  gis:vertex-lists-of ?
+    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+      [ let location gis:location-of ?
+        if not empty? location
+        [ create-foods 1
+          [ set xcor item 0 location
+            set ycor item 1 location
+            set shape "circle"
+     set size 0.2
+     set color orange
+             ] ]
+      ] ] ]
+
+ask n-of n-urbanfoods foods [set color pink]
+ask foods with [color != pink][die]
+
 ]
 ;##################
 ;; Scale the Area
@@ -191,6 +237,7 @@ end
 ;; GO COMMANDS
 ;##########################################################################################
 to go
+  if day = 100 [stop]
    if ticks = day-length  [set day day + 1 create-next-day]
 
    ask nutrients [
@@ -408,7 +455,7 @@ n-gulls
 n-gulls
 0
 100
-5
+20
 1
 1
 NIL
@@ -488,7 +535,7 @@ n-freshfoods
 n-freshfoods
 0
 100
-100
+0
 1
 1
 NIL
@@ -614,6 +661,36 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+20
+617
+192
+650
+n-farmfoods
+n-farmfoods
+0
+100
+0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+21
+655
+193
+688
+n-urbanfoods
+n-urbanfoods
+0
+100
+100
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## Parameter estimates
