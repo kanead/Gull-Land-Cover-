@@ -1,5 +1,5 @@
 extensions[gis]
-globals [ireland patch-scale day freshwater ocean land farms urban fresh-nutrients other-nutrients]
+globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh-nutrients other-nutrients]
 breed [gulls gull]
 breed [nutrients nutrient]
 breed [foods food]
@@ -21,10 +21,10 @@ to setup-ireland
   ask patch 0 0
  [
     set pcolor blue
-    ask patches in-radius 20 [set pcolor blue]
+    ask patches in-radius 200 [set pcolor blue]
   ]
 
-   ask (patch-set patch 20 0 patch -20 0 patch 0 20 patch 0 -20) [ set pcolor white ]
+   ask (patch-set patch 200 0 patch -200 0 patch 0 200 patch 0 -200) [ set pcolor white ]
 
 ;##################
 ;; Gull setup
@@ -33,7 +33,7 @@ to setup-ireland
   create-gulls n-gulls [set color white
   setxy 0 0
   set distance-traveled 0
-  set size 0.5
+  set size 5
   set shape "hawk"
   set energy 41400 ;; 11.5 hours flight time, 0.5 hours to fly back
   set retention 18000
@@ -96,7 +96,9 @@ set freshwater gis:find-range ireland "CODE_12" "411" "523" ;; include values fo
 set farms gis:find-range ireland "CODE_12" "210" "244"
 set urban gis:find-range ireland "CODE_12" "111" "143"
 set ocean gis:find-features ireland "CODE_12" "523"
-set land gis:find-range ireland "CODE_12" "110" "334" ;; include values for water features but none for ocean
+set land gis:find-range ireland "CODE_12" "110" "334"
+set NoOcean  gis:find-range ireland "CODE_12" "110" "331"
+
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
 
 if foods? [
@@ -202,6 +204,26 @@ foreach urban
 ask n-of n-urbanfoods foods [set color pink]
 ask foods with [color != pink][die]
 
+;##################
+;; NoOcean Code
+;##################
+foreach NoOcean
+  [ foreach  gis:vertex-lists-of ?
+    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+      [ let location gis:location-of ?
+        if not empty? location
+        [ create-foods 1
+          [ set xcor item 0 location
+            set ycor item 1 location
+            set shape "circle"
+     set size 0.2
+     set color orange
+             ] ]
+      ] ] ]
+
+ask n-of n-NoOceanfoods foods [set color pink]
+ask foods with [color != pink][die]
+
 ]
 ;##################
 ;; Scale the Area
@@ -238,7 +260,8 @@ end
 ;##########################################################################################
 to go
   if day = 100 [stop]
-   if ticks = day-length  [set day day + 1 create-next-day]
+   if ticks = day-length  [set day day + 1 create-next-day
+     ]
 
    ask nutrients [
 ]
@@ -275,7 +298,7 @@ end
 
 to move
       set energy  energy  - 1
-  ifelse distance-traveled <= 10 [fd v
+  ifelse distance-traveled <= 100 [fd v
     if random 6000 = 1 ;; frequency of turn
   [ ifelse random 2 = 0 ;; 50:50 chance of left or right
     [ rt 15 ] ;; could add some variation to this with random-normal 30 5
@@ -289,9 +312,10 @@ to move
 end
 
 to forage
-  ifelse any? foods in-radius vision and distance-traveled > 20 [
+  ifelse any? foods in-radius vision and distance-traveled > 100
+  [
     set color orange
-    set size 0.51 ;; gets fatter once it fed
+    set size 5.1 ;; gets fatter once it fed
   if random 200 = 1
   [ ifelse random 2 = 0
     [ rt 45 ]
@@ -300,7 +324,7 @@ to forage
 end
 
 to excrete
-if size = 0.51 [set retention retention - 1]
+if size = 5.1 [set retention retention - 1]
 if retention <= 0 [
   set retention 0
 if random excretion-rate < 57 [hatch-nutrients 1 [
@@ -353,7 +377,7 @@ to create-next-day
   [set heading random 360]
     set energy 41400
     set retention 18000
-    set size 0.5
+    set size 5
     set distance-traveled 0
     ]
     go
@@ -367,11 +391,11 @@ end
 GRAPHICS-WINDOW
 211
 10
-795
-615
-20
-20
-14.0
+782
+602
+200
+200
+1.4
 1
 10
 1
@@ -381,10 +405,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--20
-20
--20
-20
+-200
+200
+-200
+200
 0
 0
 1
@@ -499,7 +523,7 @@ INPUTBOX
 190
 318
 v
-0.0090
+0.09
 1
 0
 Number
@@ -601,10 +625,10 @@ vision
 vision
 0
 22
+5
 1
 1
-1
-km
+NIL
 HORIZONTAL
 
 SWITCH
@@ -684,6 +708,21 @@ SLIDER
 688
 n-urbanfoods
 n-urbanfoods
+0
+100
+0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+21
+692
+193
+725
+n-NoOceanfoods
+n-NoOceanfoods
 0
 100
 100
