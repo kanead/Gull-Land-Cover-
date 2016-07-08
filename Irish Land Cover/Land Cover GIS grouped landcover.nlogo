@@ -3,8 +3,8 @@ globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh
 breed [gulls gull]
 breed [nutrients nutrient]
 breed [foods food]
-gulls-own [energy  x0 y0 retention distance-traveled]
-patches-own [ landcover ]
+gulls-own [energy  x0 y0 retention distance-traveled intake max-retention xfood yfood]
+patches-own [ landcover is-map?]
 
 ;##########################################################################################
 ;; SETUP COMMANDS
@@ -18,25 +18,27 @@ to setup-ireland
 ;##################
 
   ask patches [set pcolor white]
-  ask patch 0 0
- [
-    set pcolor blue
-    ask patches in-radius 200 [set pcolor blue]
-  ]
+;  ask patch 0 0
+; [
+;    set pcolor blue
+;    ask patches in-radius 200 [set pcolor blue]
+;  ]
 
-   ask (patch-set patch 200 0 patch -200 0 patch 0 200 patch 0 -200) [ set pcolor white ]
+;   ask (patch-set patch 200 0 patch -200 0 patch 0 200 patch 0 -200) [ set pcolor white ]
 
 ;##################
 ;; Gull setup
 ;##################
 
   create-gulls n-gulls [set color white
-  setxy 0 0
+  setxy 199.5 199.5
   set distance-traveled 0
   set size 5
   set shape "hawk"
   set energy 41400 ;; 11.5 hours flight time, 0.5 hours to fly back
-  set retention 18000
+  set retention 3600
+  set intake 0
+  set max-retention 18000
   ifelse directed? [
    set heading 315 ]
   [set heading random 360]
@@ -89,6 +91,11 @@ to setup-ireland
     ]
 
 
+ ask patches [ set is-map? false ]
+   ask patches gis:intersecting ireland
+   [ set is-map? true ]
+   ask patches [ifelse is-map? = true [set pcolor blue][set pcolor white]]
+
 ;##################
 ;; Group the Land Cover Data
 ;##################
@@ -100,6 +107,13 @@ set land gis:find-range ireland "CODE_12" "110" "334"
 set NoOcean  gis:find-range ireland "CODE_12" "110" "331"
 
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
+reset-ticks
+end
+
+;##################
+;; Create the food
+;##################
+to apply-food
 
 if foods? [
 ;##################
@@ -233,7 +247,7 @@ ask foods with [color != pink][die]
 ;; show patch-scale * world-width
 ;; show world-width
 
-reset-ticks
+
 end
 
 to focus-food
@@ -313,19 +327,23 @@ end
 
 to forage
   ifelse any? foods in-radius vision and distance-traveled > 100
-  [
+  [ifelse intake < 3600 [face min-one-of foods [distance myself]
+    if any? foods in-radius 1 [
+      set xfood xcor
+      set yfood ycor
+      set intake intake + 1
     set color orange
     set size 5.1 ;; gets fatter once it fed
   if random 200 = 1
   [ ifelse random 2 = 0
     [ rt 45 ]
-    [ lt 45 ]]]
+    [ lt 45 ]]]][set color white]]
   [set color white]
 end
 
 to excrete
-if size = 5.1 [set retention retention - 1]
-if retention <= 0 [
+if size = 5.1 [set retention retention - 1  set max-retention max-retention - 1]
+if retention <= 0 and max-retention >= 0 [
   set retention 0
 if random excretion-rate < 57 [hatch-nutrients 1 [
       set color cyan
@@ -336,7 +354,7 @@ end
 
  to rtb
   if energy <= 0 [
-   face patch 0 0
+   face patch 199.5 199.5
    set color white
    fd v]
 ;    if patch-here = [0 0] [face patch 0 16]]
@@ -372,14 +390,19 @@ to create-next-day
   clear-links
   reset-ticks
   ask gulls [
-     ifelse directed? [
-  set heading 315]
-  [set heading random 360]
+  ;   ifelse directed? [
+  ;set heading 315]
+  ;[set heading random 360]
+    face patch xfood yfood
     set energy 41400
-    set retention 18000
+    set retention 3600
     set size 5
     set distance-traveled 0
+    set intake 0
+    set max-retention 18000
     ]
+  ask foods [die]
+  apply-food
     go
 end
 ;##########################################################################################
@@ -391,10 +414,10 @@ end
 GRAPHICS-WINDOW
 211
 10
-782
-602
-200
-200
+781
+601
+-1
+-1
 1.4
 1
 10
@@ -405,10 +428,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--200
-200
--200
-200
+0
+399
+0
+399
 0
 0
 1
@@ -471,10 +494,10 @@ excretion-rate
 Number
 
 SLIDER
-21
-57
-193
-90
+19
+75
+191
+108
 n-gulls
 n-gulls
 0
@@ -638,7 +661,7 @@ SWITCH
 184
 directed?
 directed?
-0
+1
 1
 -1000
 
@@ -730,6 +753,23 @@ n-NoOceanfoods
 1
 NIL
 HORIZONTAL
+
+BUTTON
+63
+42
+155
+75
+NIL
+apply-food
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## Parameter estimates
