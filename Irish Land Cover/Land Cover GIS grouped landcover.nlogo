@@ -18,13 +18,6 @@ to setup-ireland
 ;##################
 
   ask patches [set pcolor white]
-;  ask patch 0 0
-; [
-;    set pcolor blue
-;    ask patches in-radius 200 [set pcolor blue]
-;  ]
-
-;   ask (patch-set patch 200 0 patch -200 0 patch 0 200 patch 0 -200) [ set pcolor white ]
 
 ;##################
 ;; Gull setup
@@ -39,10 +32,9 @@ to setup-ireland
   set retention 3600
   set intake 0
   set max-retention 18000
-  ifelse directed? [
-   set heading 315 ]
-  [set heading random 360]
- ]
+  set heading random 360
+  ]
+
 
 ;##################
 ;; Load landcover data and colour by Code 12 value
@@ -139,7 +131,6 @@ ask foods with [color != pink][die]
 ;##################
 ;; Ocean Code
 ;##################
-; ask patches with [landcover = "523"] [set pcolor blue]
 ask n-of n-seafoods patches with [landcover = "523" and pcolor = blue] [sprout-foods 1 [
   set shape "circle"
      set size 0.2
@@ -150,24 +141,6 @@ ask n-of n-seafoods patches with [landcover = "523" and pcolor = blue] [sprout-f
 ;##################
 ;; Land Code
 ;##################
-
-;foreach land
-;  [ foreach  gis:vertex-lists-of ?
-;    [foreach  ? ;; added n-of 10 here
-;      [ let location gis:location-of ?
-;        if not empty? location
-;        [ create-foods 1
-;          [ set xcor item 0 location
-;            set ycor item 1 location
-;            set shape "circle"
-;     set size 0.2
-;     set color blue
-;             ] ]
-;      ] ] ]
-
-;ask n-of n-landfoods foods [set color pink]
-;ask foods with [color != pink][die]
-;]
 
 
 ask n-of n-landfoods patches with [landcover != "523" and pcolor = blue ] [sprout-foods 1 [
@@ -265,7 +238,7 @@ to focus-food
   ]
 end
 
-to apply-landcover ; slow procedure that applies to landcover values to the patches
+to apply-landcover ; slow procedure that applies landcover values to the patches
 gis:apply-coverage ireland "CODE_12" landcover
 end
 
@@ -280,7 +253,7 @@ to go
    ask nutrients [
 ]
 
-  ask gulls [
+  ask gulls [;fd v
    travel
    move
    forage
@@ -297,6 +270,10 @@ to go
 ;##############
 ;  ask patch 0 0 [if ticks = 7200 and day = 0 [sprout-foods 1]]
 ;  if day = 1 [stop]
+
+;##############
+;; export png files every tick for subsequent creation of an animation
+;##############
 
 ;  export-view (word ticks ".png")
 
@@ -357,7 +334,6 @@ end
    face patch 199.5 199.5
    set color white
    fd v]
-;    if patch-here = [0 0] [face patch 0 16]]
 end
 
 to territory
@@ -390,9 +366,6 @@ to create-next-day
   clear-links
   reset-ticks
   ask gulls [
-  ;   ifelse directed? [
-  ;set heading 315]
-  ;[set heading random 360]
     face patch xfood yfood
     set energy 41400
     set retention 3600
@@ -502,7 +475,7 @@ n-gulls
 n-gulls
 0
 100
-20
+1
 1
 1
 NIL
@@ -634,7 +607,7 @@ TEXTBOX
 624
 596
 750
-Remove patch scale so that patch size is 1. That way speed is easier to calculate. If v = 1 the bird is going 1 patch or 1 km per second. When v = 0.0125 it is going 45 km/hr.\n\nCamphuysen (1995) gives a minimum power speed of 9 m/s for a Herring Gull = 0.009
+Remove patch scale so that patch size is 1. That way speed is easier to calculate. If v = 1 the bird is going 1 patch or 1 km per second. When v = 0.0125 it is going 45 km/hr.\n\nCamphuysen (1995) gives a minimum power speed of 9 m/s for a Herring Gull = 0.009 km/s = 0.09 100m/s
 11
 0.0
 1
@@ -653,17 +626,6 @@ vision
 1
 NIL
 HORIZONTAL
-
-SWITCH
-3
-151
-109
-184
-directed?
-directed?
-1
-1
--1000
 
 BUTTON
 814
