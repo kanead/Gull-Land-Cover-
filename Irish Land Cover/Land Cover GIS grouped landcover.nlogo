@@ -1,3 +1,5 @@
+;; Give the food a set energy that the gulls can gain - 02/11/16
+
 extensions[gis]
 globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh-nutrients other-nutrients]
 breed [gulls gull]
@@ -253,7 +255,7 @@ to go
    ask nutrients [
 ]
 
-  ask gulls [;fd v
+  ask gulls [;fd v set heading 270
    travel
    move
    forage
