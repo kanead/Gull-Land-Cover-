@@ -42,38 +42,38 @@ to setup-ireland
 ;; Load landcover data and colour by Code 12 value
 ;##################
 
-  set ireland gis:load-dataset "land use by gull radius.shp"
+  set ireland gis:load-dataset "10km Cork Harbour Radius LandCover Cleaned.shp"
   gis:set-world-envelope gis:envelope-of ireland
 
   foreach gis:feature-list-of ireland
   [ if gis:property-value ? "CODE_12" = "523" [ gis:set-drawing-color blue gis:fill ? 2.0] ;; sea and ocean ; present
     if gis:property-value ? "CODE_12" = "522" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; estuaries ; present
     if gis:property-value ? "CODE_12" = "521" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; coastal lagoons ; present
-    ;if gis:property-value ? "CODE_12" = "512" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water bodies ; absent
-    ;if gis:property-value ? "CODE_12" = "511" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water courses ; absent
+    if gis:property-value ? "CODE_12" = "512" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water bodies ; absent
+    if gis:property-value ? "CODE_12" = "511" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; water courses ; absent
     if gis:property-value ? "CODE_12" = "423" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; intertidal flats ; present
     if gis:property-value ? "CODE_12" = "421" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; salt marshes ; present
-    ;if gis:property-value ? "CODE_12" = "412" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; peat bogs ; absent
-    ;if gis:property-value ? "CODE_12" = "411" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; inland marshes ; absent
-    ;if gis:property-value ? "CODE_12" = "333" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; sparsely vegetated areas
-    ;if gis:property-value ? "CODE_12" = "332" [ gis:set-drawing-color pink  gis:fill ? 2.0] ;; bare rock
-    ;if gis:property-value ? "CODE_12" = "331" [ gis:set-drawing-color pink  gis:fill ? 2.0] ;; beaches, dunes and sand plains
+    if gis:property-value ? "CODE_12" = "412" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; peat bogs ; absent
+    if gis:property-value ? "CODE_12" = "411" [ gis:set-drawing-color sky  gis:fill ? 2.0] ;; inland marshes ; absent
+    if gis:property-value ? "CODE_12" = "333" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; sparsely vegetated areas
+    if gis:property-value ? "CODE_12" = "332" [ gis:set-drawing-color pink  gis:fill ? 2.0] ;; bare rock
+    if gis:property-value ? "CODE_12" = "331" [ gis:set-drawing-color pink  gis:fill ? 2.0] ;; beaches, dunes and sand plains
     if gis:property-value ? "CODE_12" = "324" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; transitional woodland shrub
-    ;if gis:property-value ? "CODE_12" = "322" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; moors and heathland
-    ;if gis:property-value ? "CODE_12" = "321" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; natural grassland
+    if gis:property-value ? "CODE_12" = "322" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; moors and heathland
+    if gis:property-value ? "CODE_12" = "321" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; natural grassland
     if gis:property-value ? "CODE_12" = "313" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; mixed forest
-    ;if gis:property-value ? "CODE_12" = "312" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; coniferous forest
+    if gis:property-value ? "CODE_12" = "312" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; coniferous forest
     if gis:property-value ? "CODE_12" = "311" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; broad-leaved forest
 
     if gis:property-value ? "CODE_12" = "243" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; agriculture cum vegetation
     if gis:property-value ? "CODE_12" = "242" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; complex cultivation patterns
     if gis:property-value ? "CODE_12" = "231" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; pastures
-    ;if gis:property-value ? "CODE_12" = "222" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; fruit tress and berry plantations
+    if gis:property-value ? "CODE_12" = "222" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; fruit tress and berry plantations
     if gis:property-value ? "CODE_12" = "211" [ gis:set-drawing-color 62  gis:fill ? 2.0] ;; non irrigated arable land
 
     if gis:property-value ? "CODE_12" = "142" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; sport and leisure facilities
-    ;if gis:property-value ? "CODE_12" = "141" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; green urban areas
-    ;if gis:property-value ? "CODE_12" = "133" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; construction sites
+    if gis:property-value ? "CODE_12" = "141" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; green urban areas
+    if gis:property-value ? "CODE_12" = "133" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; construction sites
     if gis:property-value ? "CODE_12" = "132" [ gis:set-drawing-color orange  gis:fill ? 2.0] ;; dump sites
     if gis:property-value ? "CODE_12" = "131" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; mineral extraction sites
     if gis:property-value ? "CODE_12" = "124" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; airports
@@ -81,7 +81,7 @@ to setup-ireland
     if gis:property-value ? "CODE_12" = "122" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; road and rail networks
     if gis:property-value ? "CODE_12" = "121" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; industrial or commerical units
     if gis:property-value ? "CODE_12" = "112" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; discontinuous urban fabric
-    ;if gis:property-value ? "CODE_12" = "111" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; continuous urban fabric
+    if gis:property-value ? "CODE_12" = "111" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; continuous urban fabric
     ]
 
 
@@ -255,7 +255,7 @@ to go
    ask nutrients [
 ]
 
-  ask gulls [;fd v set heading 270
+  ask gulls [;fd v set heading 180
    travel
    move
    forage
@@ -521,7 +521,7 @@ INPUTBOX
 190
 318
 v
-0.09
+0.18
 1
 0
 Number
@@ -605,10 +605,10 @@ foods?
 -1000
 
 TEXTBOX
-399
-624
-596
-750
+1112
+102
+1309
+228
 Remove patch scale so that patch size is 1. That way speed is easier to calculate. If v = 1 the bird is going 1 patch or 1 km per second. When v = 0.0125 it is going 45 km/hr.\n\nCamphuysen (1995) gives a minimum power speed of 9 m/s for a Herring Gull = 0.009 km/s = 0.09 100m/s
 11
 0.0
@@ -644,16 +644,6 @@ NIL
 NIL
 NIL
 NIL
-1
-
-TEXTBOX
-218
-684
-368
-726
-change scale from 20 x 20 to 200 x 200 for more realistic patch dynamics
-11
-0.0
 1
 
 BUTTON
@@ -733,6 +723,16 @@ NIL
 NIL
 NIL
 NIL
+1
+
+TEXTBOX
+809
+109
+1071
+235
+Current map is 400 x 400 patches which is equal to 20km x 20km \n\nA bird travelling at 9m/sec should take 5.55 seconds to traverse a patch\n\nA bird travelling at 9m/sec should take 1111 seconds to traverse 10km\n\n
+11
+0.0
 1
 
 @#$#@#$#@
