@@ -7,6 +7,7 @@ breed [nutrients nutrient]
 breed [foods food]
 gulls-own [energy  x0 y0 retention distance-traveled intake max-retention xfood yfood]
 patches-own [ landcover is-map?]
+foods-own [mass]
 
 ;##########################################################################################
 ;; SETUP COMMANDS
@@ -214,6 +215,9 @@ ask n-of n-NoOceanfoods foods [set color pink]
 ask foods with [color != pink][die]
 
 ]
+
+ ask foods [set mass  (round random-normal 50 10) / (0.067)
+   ]
 ;##################
 ;; Scale the Area
 ;##################
@@ -240,6 +244,8 @@ to focus-food
   ]
 end
 
+
+
 to apply-landcover ; slow procedure that applies landcover values to the patches
 gis:apply-coverage ireland "CODE_12" landcover
 end
@@ -254,6 +260,10 @@ to go
 
    ask nutrients [
 ]
+
+  ask foods [
+    decay
+  ]
 
   ask gulls [;fd v set heading 180
    travel
@@ -284,40 +294,66 @@ to go
 ;##########################################################################################
 
 to travel
-  if energy > 0 [ if color = white [set distance-traveled distance-traveled + v] if color = orange [set distance-traveled distance-traveled + v / 10]]
+;  if energy > 0 [ if color = white [set distance-traveled distance-traveled + v] if color = orange [set distance-traveled distance-traveled + v / 10]]
 ;  if ticks = day-length - 1 [ask gulls [ show distance-traveled]]
 
 end
 
 to move
       set energy  energy  - 1
-  ifelse distance-traveled <= 100 [fd v
+   fd v
     if random 6000 = 1 ;; frequency of turn
   [ ifelse random 2 = 0 ;; 50:50 chance of left or right
     [ rt 15 ] ;; could add some variation to this with random-normal 30 5
-    [ lt 15 ]]]
-   [ifelse color = white  [fd v / 5
-    if random 600 = 1 ;; frequency of turn
-  [ ifelse random 2 = 0 ;; 50:50 chance of left or right
-    [ rt 45 ] ;; could add some variation to this with random-normal 30 5
-    [ lt 45 ]]][fd v / 10]]
-
+    [ lt 15 ]]
 end
 
 to forage
-  ifelse any? foods in-radius vision and distance-traveled > 100
-  [ifelse intake < 3600 [face min-one-of foods [distance myself]
+
+  ifelse any? foods in-radius vision
+  [if intake < 3164.17910448 [face min-one-of foods [distance myself]
     if any? foods in-radius 1 [
+      move-to min-one-of foods [distance myself]
+      let my-food min-one-of foods [distance myself]
+
+             set intake  intake + [1] of my-food
+           ask my-food [ set mass mass - 1 ]
+
       set xfood xcor
       set yfood ycor
-      set intake intake + 1
-    set color orange
+      set color orange
     set size 5.1 ;; gets fatter once it fed
+    ]
   if random 200 = 1
   [ ifelse random 2 = 0
     [ rt 45 ]
-    [ lt 45 ]]]][set color white]]
-  [set color white]
+    [ lt 45 ]]]][set color white]
+
+;  ifelse intake < 3164.17910448 and any? foods in-radius vision
+
+
+        ;          if ([mass] of my-food > 0) [set mass mass + mass ask my-food [set mass mass - mass]]
+;  ifelse any? foods in-radius vision
+;;  [ifelse mass < 3164.17910448 [face min-one-of foods [distance myself]
+;    if any? foods in-radius 1 [
+;      move-to min-one-of foods [distance myself]
+;      let my-food min-one-of foods [distance myself]
+
+;             set mass mass + mass
+;            ask my-food [ set mass mass - mass ]
+
+;      set xfood xcor
+;      set yfood ycor
+
+
+
+;    set color orange
+;    set size 5.1 ;; gets fatter once it fed
+;  if random 200 = 1
+;  [ ifelse random 2 = 0
+;    [ rt 45 ]
+;    [ lt 45 ]]]][set color white]]
+;  [set color white]
 end
 
 to excrete
@@ -327,12 +363,12 @@ if retention <= 0 and max-retention >= 0 [
 if random excretion-rate < 57 [hatch-nutrients 1 [
       set color cyan
       set shape "circle"
-      set size 0.2
+      set size 7
       check-water]]]
 end
 
  to rtb
-  if energy <= 0 [
+  if energy <= 0 or intake >= 3164.17910448 [
    face patch 199.5 199.5
    set color white
    fd v]
@@ -360,6 +396,12 @@ to check-water
     set other-nutrients other-nutrients + 1
        die
   ]
+end
+;##########################################################################################
+;; FOOD COMMANDS
+;##########################################################################################
+to decay
+  if mass <= 0 [die]
 end
 ;##########################################################################################
 ;; RESET COMMANDS
@@ -557,7 +599,7 @@ n-freshfoods
 n-freshfoods
 0
 100
-0
+11
 1
 1
 NIL
@@ -622,8 +664,8 @@ SLIDER
 vision
 vision
 0
-22
-5
+300
+20
 1
 1
 NIL
@@ -702,7 +744,7 @@ n-NoOceanfoods
 n-NoOceanfoods
 0
 100
-100
+0
 1
 1
 NIL
