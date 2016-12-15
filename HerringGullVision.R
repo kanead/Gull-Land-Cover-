@@ -1,12 +1,23 @@
 #################################################################################################
 ## Visual Acuity of Gulls 
 #################################################################################################
+library(aspace)
+
 AL<-c(16.542, 20.71,28.14)
 VA<-10 ^ (1.42 * log10(AL) - 0.11)
 VA ## Herring Gull has a visual acuity of 41.72487 cycles per metre 
 ## The allometry and scaling of the size of vertebrate eyes
 ## Howland et al. 2004
 ## Herring Gull weight in kg: 0.5350, axial length in mm: 16.542
+
+# Herring Gull 
+target<-0.1
+distance<-250
+target/distance
+atan_d(target/distance) # degrees per cycle 
+# To get cycles per degree, divide one by that number.
+1/atan_d(target/distance) # cycles per degree
+
 
 #################################################################################################
 ## Visual Acuity of Scavengers 
@@ -49,7 +60,6 @@ atan_d(0.002) # degrees per cycle
 1/atan_d(0.002) # cycles per degree
 
 # Herring Gull 
-# Spotted hyena
 target<-1
 distance<-1000
 target/distance

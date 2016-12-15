@@ -1,7 +1,7 @@
 ;; Give the food a set energy that the gulls can gain - 02/11/16
 
 extensions[gis]
-globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh-nutrients other-nutrients]
+globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh-nutrients other-nutrients randomArea]
 breed [gulls gull]
 breed [nutrients nutrient]
 breed [foods food]
@@ -12,6 +12,10 @@ foods-own [mass]
 ;##########################################################################################
 ;; SETUP COMMANDS
 ;##########################################################################################
+
+to-report random-pareto [alpha mm]
+  report mm / ( random-float 1 ^ (1 / alpha) )
+end
 
 to setup-ireland
   clear-all
@@ -100,6 +104,7 @@ set urban gis:find-range ireland "CODE_12" "111" "143"
 set ocean gis:find-features ireland "CODE_12" "523"
 set land gis:find-range ireland "CODE_12" "110" "334"
 set NoOcean  gis:find-range ireland "CODE_12" "110" "331"
+set randomArea n-of 100 patches with [is-map? = true]
 
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
 reset-ticks
@@ -179,7 +184,7 @@ ask foods with [color != pink][die]
 ;##################
 foreach urban
   [ foreach  gis:vertex-lists-of ?
-    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+    [foreach  ? ;; can ad n-of x here to specify the number of food items produced per patch
       [ let location gis:location-of ?
         if not empty? location
         [ create-foods 1
@@ -216,7 +221,21 @@ ask foods with [color != pink][die]
 
 ]
 
- ask foods [set mass  (round random-normal 50 10) / (0.067)
+
+;##################
+;; Random Food Code
+;##################
+;foreach randomArea  [ sprout-foods 1
+;          [             set shape "circle"
+;     set size 0.2
+;     set color pink
+;             ] ]
+
+
+
+;show mean( n-values 100 [  ( (10 ^ random-float 2.01) ) ])
+
+ ask foods [set mass  (round (10 ^ random-float 2.01)) / (0.067)
    ]
 ;##################
 ;; Scale the Area
@@ -301,11 +320,16 @@ end
 
 to move
       set energy  energy  - 1
-   fd v
+ ifelse intake = 0  [fd v
     if random 6000 = 1 ;; frequency of turn
   [ ifelse random 2 = 0 ;; 50:50 chance of left or right
     [ rt 15 ] ;; could add some variation to this with random-normal 30 5
-    [ lt 15 ]]
+    [ lt 15 ]]]
+
+ [fd v / 2 if random 600 = 1
+  [ ifelse random 2 = 0
+    [ rt 45 ] ;
+    [ lt 45 ]]]
 end
 
 to forage
@@ -329,31 +353,6 @@ to forage
     [ rt 45 ]
     [ lt 45 ]]]][set color white]
 
-;  ifelse intake < 3164.17910448 and any? foods in-radius vision
-
-
-        ;          if ([mass] of my-food > 0) [set mass mass + mass ask my-food [set mass mass - mass]]
-;  ifelse any? foods in-radius vision
-;;  [ifelse mass < 3164.17910448 [face min-one-of foods [distance myself]
-;    if any? foods in-radius 1 [
-;      move-to min-one-of foods [distance myself]
-;      let my-food min-one-of foods [distance myself]
-
-;             set mass mass + mass
-;            ask my-food [ set mass mass - mass ]
-
-;      set xfood xcor
-;      set yfood ycor
-
-
-
-;    set color orange
-;    set size 5.1 ;; gets fatter once it fed
-;  if random 200 = 1
-;  [ ifelse random 2 = 0
-;    [ rt 45 ]
-;    [ lt 45 ]]]][set color white]]
-;  [set color white]
 end
 
 to excrete
@@ -599,7 +598,7 @@ n-freshfoods
 n-freshfoods
 0
 100
-11
+0
 1
 1
 NIL
@@ -665,7 +664,7 @@ vision
 vision
 0
 300
-20
+2
 1
 1
 NIL
@@ -729,7 +728,7 @@ n-urbanfoods
 n-urbanfoods
 0
 100
-0
+100
 1
 1
 NIL
