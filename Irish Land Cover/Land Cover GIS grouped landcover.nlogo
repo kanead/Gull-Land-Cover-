@@ -1,7 +1,7 @@
 ;; Give the food a set energy that the gulls can gain - 02/11/16
 
 extensions[gis]
-globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh-nutrients other-nutrients]
+globals [ireland patch-scale day freshwater ocean land farms urban NoOcean fresh-nutrients other-nutrients randomArea]
 breed [gulls gull]
 breed [nutrients nutrient]
 breed [foods food]
@@ -86,7 +86,7 @@ to setup-ireland
     ]
 
 
- ask patches [ set is-map? false ]
+ask patches [ set is-map? false ]
    ask patches gis:intersecting ireland
    [ set is-map? true ]
    ask patches [ifelse is-map? = true [set pcolor blue][set pcolor white]]
@@ -100,6 +100,7 @@ set urban gis:find-range ireland "CODE_12" "111" "143"
 set ocean gis:find-features ireland "CODE_12" "523"
 set land gis:find-range ireland "CODE_12" "110" "334"
 set NoOcean  gis:find-range ireland "CODE_12" "110" "331"
+set randomArea gis:find-range ireland "CODE_12" "110" "524"
 
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
 reset-ticks
@@ -179,7 +180,7 @@ ask foods with [color != pink][die]
 ;##################
 foreach urban
   [ foreach  gis:vertex-lists-of ?
-    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+    [foreach  ? ;; can ad n-of x here to specify the number of food items produced per patch
       [ let location gis:location-of ?
         if not empty? location
         [ create-foods 1
@@ -214,9 +215,36 @@ foreach NoOcean
 ask n-of n-NoOceanfoods foods [set color pink]
 ask foods with [color != pink][die]
 
+
+
+
+;##################
+;; Random Food Code
+;##################
+foreach randomArea
+[ foreach  gis:vertex-lists-of ?
+    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+      [ let location gis:location-of ?
+        if not empty? location
+        [ create-foods 1
+          [ set xcor item 0 location
+            set ycor item 1 location
+            set shape "circle"
+     set size 0.2
+     set color orange
+             ] ]
+      ] ] ]
+
+ask n-of n-randomfoods foods [set color pink]
+ask foods with [color != pink][die]
+
 ]
 
- ask foods [set mass  (round random-normal 50 10) / (0.067)
+
+;show mean( n-values 100 [  ( (10 ^ random-float 2.01) ) ])
+; ask foods [set mass  (round (10 )) / (0.067)
+;   ]
+ ask foods [set mass  (round (10 ^ random-float 2.01)) / (0.067)
    ]
 ;##################
 ;; Scale the Area
@@ -265,7 +293,7 @@ to go
     decay
   ]
 
-  ask gulls [;fd v set heading 180
+  ask gulls [fd v ;set heading 180
    travel
    move
    forage
@@ -301,17 +329,22 @@ end
 
 to move
       set energy  energy  - 1
-   fd v
-    if random 6000 = 1 ;; frequency of turn
+ ifelse intake = 0  [fd v
+    if random 600 = 1 ;; frequency of turn
   [ ifelse random 2 = 0 ;; 50:50 chance of left or right
     [ rt 15 ] ;; could add some variation to this with random-normal 30 5
-    [ lt 15 ]]
+    [ lt 15 ]]]
+ [fd v / 2 if random 200 = 1
+  [ ifelse random 2 = 0
+    [ rt 45 ] ;
+    [ lt 45 ]]]
 end
 
 to forage
 
   ifelse any? foods in-radius vision
-  [if intake < 3164.17910448 [face min-one-of foods [distance myself]
+  [fd v / 2
+    if intake < 3164.17910448 [face min-one-of foods [distance myself]
     if any? foods in-radius 1 [
       move-to min-one-of foods [distance myself]
       let my-food min-one-of foods [distance myself]
@@ -324,36 +357,12 @@ to forage
       set color orange
     set size 5.1 ;; gets fatter once it fed
     ]
+    fd v / 2
   if random 200 = 1
   [ ifelse random 2 = 0
     [ rt 45 ]
     [ lt 45 ]]]][set color white]
 
-;  ifelse intake < 3164.17910448 and any? foods in-radius vision
-
-
-        ;          if ([mass] of my-food > 0) [set mass mass + mass ask my-food [set mass mass - mass]]
-;  ifelse any? foods in-radius vision
-;;  [ifelse mass < 3164.17910448 [face min-one-of foods [distance myself]
-;    if any? foods in-radius 1 [
-;      move-to min-one-of foods [distance myself]
-;      let my-food min-one-of foods [distance myself]
-
-;             set mass mass + mass
-;            ask my-food [ set mass mass - mass ]
-
-;      set xfood xcor
-;      set yfood ycor
-
-
-
-;    set color orange
-;    set size 5.1 ;; gets fatter once it fed
-;  if random 200 = 1
-;  [ ifelse random 2 = 0
-;    [ rt 45 ]
-;    [ lt 45 ]]]][set color white]]
-;  [set color white]
 end
 
 to excrete
@@ -519,7 +528,7 @@ n-gulls
 n-gulls
 0
 100
-1
+2
 1
 1
 NIL
@@ -599,7 +608,7 @@ n-freshfoods
 n-freshfoods
 0
 100
-11
+0
 1
 1
 NIL
@@ -665,7 +674,7 @@ vision
 vision
 0
 300
-20
+5
 1
 1
 NIL
@@ -773,6 +782,31 @@ TEXTBOX
 1071
 235
 Current map is 400 x 400 patches which is equal to 20km x 20km \n\nA bird travelling at 9m/sec should take 5.55 seconds to traverse a patch\n\nA bird travelling at 9m/sec should take 1111 seconds to traverse 10km\n\n
+11
+0.0
+1
+
+SLIDER
+22
+729
+194
+762
+n-randomFoods
+n-randomFoods
+0
+100
+100
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+949
+480
+1099
+662
+SPEED NOTES 27/01/17\n- The map is a circle with radius 10km\n- There are 200 patches that make up this radius\n- So each patch is 50m \n- A bird travelling at 9m/sec should take 1111 seconds to traverse 10km\n- We double because we're dealing with patches of 50m not 100m\n\n
 11
 0.0
 1

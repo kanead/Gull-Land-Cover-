@@ -13,10 +13,6 @@ foods-own [mass]
 ;; SETUP COMMANDS
 ;##########################################################################################
 
-to-report random-pareto [alpha mm]
-  report mm / ( random-float 1 ^ (1 / alpha) )
-end
-
 to setup-ireland
   clear-all
 
@@ -46,8 +42,9 @@ to setup-ireland
 ;##################
 ;; Load landcover data and colour by Code 12 value
 ;##################
-
-  set ireland gis:load-dataset "10km midpoint Radius LandCover Cleaned.shp"
+ifelse iscity? = true [
+  set ireland gis:load-dataset "10km midpoint Radius LandCover Cleaned.shp"]
+[set ireland gis:load-dataset "10km Cork Harbour Radius LandCover Cleaned.shp"]
   gis:set-world-envelope gis:envelope-of ireland
 
   foreach gis:feature-list-of ireland
@@ -79,7 +76,7 @@ to setup-ireland
     if gis:property-value ? "CODE_12" = "142" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; sport and leisure facilities
     if gis:property-value ? "CODE_12" = "141" [ gis:set-drawing-color 63  gis:fill ? 2.0] ;; green urban areas
     if gis:property-value ? "CODE_12" = "133" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; construction sites
-    if gis:property-value ? "CODE_12" = "132" [ gis:set-drawing-color orange  gis:fill ? 2.0] ;; dump sites
+    if gis:property-value ? "CODE_12" = "132" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; dump sites
     if gis:property-value ? "CODE_12" = "131" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; mineral extraction sites
     if gis:property-value ? "CODE_12" = "124" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; airports
     if gis:property-value ? "CODE_12" = "123" [ gis:set-drawing-color grey  gis:fill ? 2.0] ;; port areas
@@ -104,7 +101,7 @@ set urban gis:find-range ireland "CODE_12" "111" "143"
 set ocean gis:find-features ireland "CODE_12" "523"
 set land gis:find-range ireland "CODE_12" "110" "334"
 set NoOcean  gis:find-range ireland "CODE_12" "110" "331"
-set randomArea n-of 100 patches with [is-map? = true]
+set randomArea gis:find-range ireland "CODE_12" "110" "524"
 
 ;; ask the patches to assume the landcover value for the vector that takes up most of the space over them
 reset-ticks
@@ -219,24 +216,37 @@ foreach NoOcean
 ask n-of n-NoOceanfoods foods [set color pink]
 ask foods with [color != pink][die]
 
-]
+
 
 
 ;##################
 ;; Random Food Code
 ;##################
-;foreach randomArea  [ sprout-foods 1
-;          [             set shape "circle"
-;     set size 0.2
-;     set color pink
-;             ] ]
+foreach randomArea
+[ foreach  gis:vertex-lists-of ?
+    [foreach  ? ;; can add n-of x here to specify the number of food items produced per patch
+      [ let location gis:location-of ?
+        if not empty? location
+        [ create-foods 1
+          [ set xcor item 0 location
+            set ycor item 1 location
+            set shape "circle"
+     set size 0.2
+     set color orange
+             ] ]
+      ] ] ]
 
+ask n-of n-randomfoods foods [set color pink]
+ask foods with [color != pink][die]
+
+]
 
 
 ;show mean( n-values 100 [  ( (10 ^ random-float 2.01) ) ])
-
- ask foods [set mass  (round (10 ^ random-float 2.01)) / (0.067)
+ ask foods [set mass  (round (1 )) / (0.067)
    ]
+; ask foods [set mass  (round (10 ^ random-float 2.01)) / (0.067)
+;   ]
 ;##################
 ;; Scale the Area
 ;##################
@@ -284,7 +294,7 @@ to go
     decay
   ]
 
-  ask gulls [;fd v set heading 180
+  ask gulls [fd v ;set heading 180
    travel
    move
    forage
@@ -321,12 +331,11 @@ end
 to move
       set energy  energy  - 1
  ifelse intake = 0  [fd v
-    if random 6000 = 1 ;; frequency of turn
+    if random 600 = 1 ;; frequency of turn
   [ ifelse random 2 = 0 ;; 50:50 chance of left or right
     [ rt 15 ] ;; could add some variation to this with random-normal 30 5
     [ lt 15 ]]]
-
- [fd v / 2 if random 600 = 1
+ [fd v / 2 if random 200 = 1
   [ ifelse random 2 = 0
     [ rt 45 ] ;
     [ lt 45 ]]]
@@ -335,7 +344,8 @@ end
 to forage
 
   ifelse any? foods in-radius vision
-  [if intake < 3164.17910448 [face min-one-of foods [distance myself]
+  [fd v / 2
+    if intake < 3164.17910448 [face min-one-of foods [distance myself]
     if any? foods in-radius 1 [
       move-to min-one-of foods [distance myself]
       let my-food min-one-of foods [distance myself]
@@ -348,6 +358,7 @@ to forage
       set color orange
     set size 5.1 ;; gets fatter once it fed
     ]
+    fd v / 2
   if random 200 = 1
   [ ifelse random 2 = 0
     [ rt 45 ]
@@ -518,7 +529,7 @@ n-gulls
 n-gulls
 0
 100
-1
+2
 1
 1
 NIL
@@ -664,7 +675,7 @@ vision
 vision
 0
 300
-2
+5
 1
 1
 NIL
@@ -728,7 +739,7 @@ n-urbanfoods
 n-urbanfoods
 0
 100
-100
+0
 1
 1
 NIL
@@ -775,6 +786,42 @@ Current map is 400 x 400 patches which is equal to 20km x 20km \n\nA bird travel
 11
 0.0
 1
+
+SLIDER
+21
+729
+193
+762
+n-randomfoods
+n-randomfoods
+0
+10000
+10000
+1
+1
+NIL
+HORIZONTAL
+
+TEXTBOX
+828
+525
+1203
+651
+SPEED NOTES 27/01/17\n- The map is a circle with radius 10km\n- There are 200 patches that make up this radius\n- So each patch is 50m \n- A bird travelling at 9m/sec should take 1111 seconds to traverse 10km\n- We double because we're dealing with patches of 50m not 100m\n\n
+11
+0.0
+1
+
+SWITCH
+831
+320
+934
+353
+iscity?
+iscity?
+0
+1
+-1000
 
 @#$#@#$#@
 ## Parameter estimates
