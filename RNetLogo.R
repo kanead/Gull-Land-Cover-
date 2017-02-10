@@ -79,3 +79,15 @@ meannndistList<-by(nutrientGraph[, 2:3], nutrientGraph$model, meanNearNeigbDist)
 ## Close NetLogo 
 NLQuit()
 
+## Calculating Nutrient Loading 
+Nconc <- 20.2 # Nitrogen conc. of faeces (mg g -1)
+Pconc <- 18.3 # Phosphorus conc. of faeces (mg g -1)	
+mass <- 0.53 # Mass of faeces 
+no.CoastalFaeces <- 59
+no.CityFaeces <- 225
+# coastal model 
+Nconc * mass * no.CoastalFaeces
+Pconc * mass * no.CoastalFaeces
+# city model 
+Nconc * mass * no.CityFaeces
+Pconc * mass * no.CityFaeces
