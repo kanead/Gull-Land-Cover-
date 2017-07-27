@@ -11,10 +11,10 @@ library(spatstat)
 
 NLStart("C:/Program Files (x86)/NetLogo 5.2.1")
 nl.path <- "C:/Program Files (x86)/NetLogo 5.2.1"
-model.path <- "/models/Sample Models/Biology/Land Cover GIS grouped landcover.nlogo"
+model.path <- "/models/Sample Models/Biology/Gull Model Combined30km.nlogo"
 NLLoadModel(paste(nl.path,model.path,sep=""))
 
-NLCommand("set N-gulls 2") ## 
+NLCommand("set N-gulls 89") ## 
 NLCommand("set N-urbanfoods 0") ##
 NLCommand("set N-farmfoods 0") ##
 NLCommand("set N-NoOceanfoods 100") ## 
@@ -82,12 +82,21 @@ NLQuit()
 ## Calculating Nutrient Loading 
 Nconc <- 20.2 # Nitrogen conc. of faeces (mg g -1)
 Pconc <- 18.3 # Phosphorus conc. of faeces (mg g -1)	
-mass <- 0.53 # Mass of faeces 
-no.CoastalFaeces <- 59
-no.CityFaeces <- 225
+mass <- 0.53 # Mass of faeces in grams 
 # coastal model 
-Nconc * mass * no.CoastalFaeces
-Pconc * mass * no.CoastalFaeces
+no.CoastalFaeces <- 347771        
+Nconc * mass * no.CoastalFaeces / 1000 # in grams
+Pconc * mass * no.CoastalFaeces / 1000 # in grams
 # city model 
+no.CityFaeces <- 225
 Nconc * mass * no.CityFaeces
 Pconc * mass * no.CityFaeces
+
+
+par(mfrow = c(1, 2))
+# Plot gamma distribution for trip length 
+g <- function(x) dgamma(x,3,0.3)
+plot(g,xlim=c(0,45),main="Gamma (3, 0.3)", xlab="trip length (km)", ylab="probability density")
+
+h <- function(x) dgamma(x,15,0.7)
+plot(h,xlim=c(0,45),main="Gamma (15, 0.7)", xlab="trip length (km)", ylab="probability density")
